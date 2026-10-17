@@ -1,0 +1,12 @@
+Symbol,Security,GICS Sector,GICS Sub-Industry,Headquarters Location,Date added,CIK,Founded
+AAPL,Apple Inc.,Information Technology,Technology Hardware,"Cupertino, California",1982-11-30,320193,1976
+BLK,"Block, Inc.",Financials,Transaction & Payment Processing Services,"Oakland, California",2020-09-21,1512673,2009
+ABT,Abbott Laboratories,Health Care,Health Care Equipment,"North Chicago, Illinois",1957-03-04,1800,1888
+ABBV,AbbVie,Health Care,Biotechnology,"North Chicago, Illinois",2012-12-31,1551152,2013 (1888)
+ZETA,Zeta Corp,Industrials,Machinery,"Houston, Texas",2020-01-01,11111,2013
+ANC,Ancient Wares,Consumer Discretionary,Specialty,"Rome, Italy",2020-01-01,22222,753
+QTE,"Company with ""Super"" Brand, LLC",Information Technology,Software,"Austin, Texas",2021-01-01,88888,2010
+NOYR,No Year Corp,Financials,Finance,"New York, New York",2020-01-01,77777,
+TEXT,Text Year Ltd,Materials,Chemicals,"Wilmington, Delaware",2020-01-01,66666,Unknown
+XYZ,Xyratex Inc,Information Technology,Hardware,"San Jose, California",2010-01-01,99999,1904/1946/1959
+ALPHA,"Alpha, Bravo & Charlie, Inc.",Industrials,Services,"Saint Paul, Minnesota",2020-01-01,12345,1950

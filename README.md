@@ -26,7 +26,14 @@ AffinityAnswers/
 │   ├── README.md                     # Rfam schema notes, justifications & verified results
 │   ├── run_queries.py                # Cross-platform execution runner
 │   └── run_queries.sh                # Shell execution runner wrapper
-└── question3_shell/                  # (Question 3: Shell CSV parser - in progress)
+└── question3_shell/
+    ├── sort_companies.sh             # Main Bash entrypoint script
+    ├── parse_companies.awk           # Quote-aware CSV parser and extractor
+    ├── README.md                     # Design decisions, assumptions & live results
+    └── tests/
+        ├── test_script.sh            # Automated test suite (7 tests)
+        └── fixtures/
+            └── edge_cases.csv        # Edge cases fixture (quotes, commas, years)
 ```
 
 ---
@@ -79,3 +86,27 @@ python question2_sql/run_queries.py
 # Or native MySQL CLI
 mysql -h mysql-rfam-public.ebi.ac.uk -P 4497 -u rfamro Rfam < question2_sql/answers.sql
 ```
+
+---
+
+## Question 3: Unix Shell CSV Parser & Sorter (S&P 500)
+
+### Overview
+A robust, quote-aware Unix Bash + AWK script that downloads the S&P 500 company constituents dataset, dynamically maps headers, extracts the legal founding year (e.g. resolving `2013 (1888)` to `2013`), and outputs a clean tab-separated dataset sorted numerically by founding year in ascending order.
+
+### Key Implementation Decisions
+- **Quote-Aware CSV Parsing:** Solves the core CSV problem where 13 company names (e.g. `Block, Inc.`) and almost all headquarters locations contain commas. Implements an RFC-4180 quote scanner in AWK that avoids naive `awk -F,` or `cut -d,` field shifting.
+- **Dynamic Header Mapping:** Locates `Security`, `Headquarters Location`, and `Founded` dynamically by header text rather than relying on brittle column indices.
+- **Numeric Year Sorting & Missing Data Handling:** Uses intermediate sort keys so that years are sorted numerically (753 precedes 1888 precedes 2013), ties are broken deterministically by company name, and missing or unparseable years are placed at the very end without fabricating fake dummy years.
+- **Ambiguity-Free TSV Output:** Outputs tab-separated records (`Company Name\tLocation\tFounding Year`) so that internal commas in company names or locations never create delimiter ambiguity.
+
+### Quick Run
+
+```bash
+# Execute with the canonical assignment URL
+./question3_shell/sort_companies.sh "https://raw.githubusercontent.com/datasets/s-and-p-500-companies/refs/heads/main/data/constituents.csv"
+
+# Run automated test suite (7 tests)
+./question3_shell/tests/test_script.sh
+```
+
