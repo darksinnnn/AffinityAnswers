@@ -8,9 +8,6 @@ This repository contains verified solutions for the Affinity Answers Data Engine
 
 ```text
 AffinityAnswers/
-├── docs/
-│   ├── Affinity_Answers_Take_Home_Implementation_Plan.md
-│   └── Data Engineer Application Questions.pdf
 ├── question1_python/
 │   ├── product_search.py              # MD Computers search scraper CLI
 │   ├── requirements.txt              # Python dependencies
