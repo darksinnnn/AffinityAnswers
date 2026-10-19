@@ -89,12 +89,14 @@ LIMIT 1;
   - Pests: *Diuraphis noxia* (Russian wheat aphid), *Cephus cinctus* (wheat stem sawfly)
   - Birds: *Oenanthe deserti* (desert wheatear)
 - **Deterministic Ordering:** Sorting by `rs.length DESC` with deterministic tie-breakers (`tx.species ASC`, `rs.rfamseq_acc ASC`) ensures reproducibility even if multiple accessions share the same length.
+- **Molecular Type (`mol_type`) Verification:** Schema inspection shows `rfamseq.mol_type` is an `enum` column. The top accession `LT934116.1` was verified on the live database to have `mol_type = 'genomic DNA'`. Comparing the query with an explicit DNA filter (`AND rs.mol_type LIKE '%DNA%'`) produces identical results (*Triticum durum*, accession `LT934116.1`); neither the returned species nor accession change.
 
 **Verified Result:**
 - **Species:** `Triticum durum (durum wheat)`
 - **Accession:** `LT934116.1`
 - **Sequence Length:** `836,514,780` bp (Chromosome 5B assembly)
-*(Runner-up: `Triticum aestivum (bread wheat)`, accession `LS992087.1`, length `830,829,764` bp).*
+- **Molecular Type:** `genomic DNA`
+*(Runner-up: `Triticum aestivum (bread wheat)`, accession `LS992087.1`, length `830,829,764` bp, also `genomic DNA`).*
 
 ---
 
@@ -146,6 +148,7 @@ LIMIT 15 OFFSET 120;
 | **135** | `RF03674` | `MIR5387` | 836,514,780 |
 
 *Execution time on public server: ~592 seconds (scanning across 10,310,293 region rows and 81,044,540 sequences).*
+*Optimization note: An alternative formulation with `WHERE rs.length > 1000000` was empirically benchmarked on the live database, executing in 626.43 seconds and yielding the exact same 15 rows. Because `rfamseq.length` is unindexed, MySQL still performs ~2.3 million primary key lookups into `rfamseq`, confirming that pre-filtering provides no runtime benefit.*
 
 ---
 

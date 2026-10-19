@@ -68,7 +68,7 @@ SQL queries written and verified against the live read-only public MySQL endpoin
 
 ### Verified Live Results
 1. **Acacia Species Count:** **326** distinct species records in the genus *Acacia* belonging to the green plants lineage (*Viridiplantae*). Avoids 63 false positive matches caught by broad `%Acacia%` matching (insects, fungi, rodents).
-2. **Longest Wheat DNA Sequence:** ***Triticum durum* (durum wheat)**, accession **`LT934116.1`**, sequence length **`836,514,780` bp** (chromosome 5B assembly). Avoids 58 false positive matches caught by broad `%wheat%` matching (buckwheat, viruses, pests, birds).
+2. **Longest Wheat DNA Sequence:** ***Triticum durum* (durum wheat)**, accession **`LT934116.1`**, sequence length **`836,514,780` bp** (chromosome 5B assembly, verified `mol_type = 'genomic DNA'`). Avoids 58 false positive matches caught by broad `%wheat%` matching (buckwheat, viruses, pests, birds).
 3. **Family Pagination (Page 9, 15/page, Max Length > 1,000,000):** Correctly aggregates `MAX(rs.length)` across families, filters with `HAVING MAX(rs.length) > 1000000`, and paginates using `LIMIT 15 OFFSET 120` with deterministic tie-breaker `f.rfam_acc ASC`. Page 9 returns 15 families (accessions `RF01219` through `RF03674`), each with a maximum sequence length of `836,514,780` bp.
 
 ### Quick Run

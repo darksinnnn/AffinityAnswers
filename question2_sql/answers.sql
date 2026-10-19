@@ -47,6 +47,11 @@ WHERE tx.species LIKE 'Acacia%'
 -- 3. Schema Join: Joins `rfamseq` to `taxonomy` on `ncbi_id`.
 -- 4. Deterministic Ordering: Orders descending by `rs.length`. Additional sort keys
 --    (`tx.species ASC`, `rs.rfamseq_acc ASC`) resolve any potential ties.
+-- 5. Molecular Type Verification:
+--    Inspected `rfamseq.mol_type` schema (ENUM). The reported wheat accession
+--    LT934116.1 is verified to have `mol_type = 'genomic DNA'`. Comparing the query
+--    with an explicit DNA filter (`AND rs.mol_type LIKE '%DNA%'`) produces the
+--    identical species ('Triticum durum (durum wheat)') and accession (LT934116.1).
 --
 -- Verified Result:
 -- Species: Triticum durum (durum wheat)
@@ -91,9 +96,12 @@ LIMIT 1;
 -- 6. Performance & Execution Plan Note:
 --    Joining `family` (4,018) -> `full_region` (10,310,293) -> `rfamseq` (81,044,540)
 --    on a public WAN MySQL server performs ~2.3 million indexed primary key lookups into `rfamseq`,
---    running in ~592 seconds. An equivalent formulation that adds `WHERE rs.length > 1000000`
---    before grouping is logically valid because any family whose maximum sequence length exceeds
---    1,000,000 must contain at least one sequence meeting that condition.
+--    running in ~592 seconds.
+--    An alternative formulation adding `WHERE rs.length > 1000000` was empirically tested on
+--    the live database: it produced the exact same 15 rows (Rows 121-135, RF01219 to RF03674 at 836,514,780 bp)
+--    with a measured runtime of 626.43 seconds. Because `rfamseq.length` is not indexed, MySQL still
+--    performs ~2.3 million primary key lookups into `rfamseq`, offering no performance improvement over
+--    the standard HAVING MAX(rs.length) > 1000000 formulation.
 -- ==============================================================================
 
 SELECT
