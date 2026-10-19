@@ -22,8 +22,8 @@ DB_CONFIG = {
     "host": "mysql-rfam-public.ebi.ac.uk",
     "port": 4497,
     "user": "rfamro",
-    "passwd": "",
-    "db": "Rfam",
+    "password": "",
+    "database": "Rfam",
     "connect_timeout": 30,
     "cursorclass": pymysql.cursors.DictCursor,
 }
@@ -115,8 +115,22 @@ def run_query(cursor, query_info):
 
 
 def main():
+    target_id = sys.argv[1].strip() if len(sys.argv) > 1 else None
+
+    queries_to_run = QUERIES
+    if target_id and target_id.lower() not in ("all", "--all"):
+        matched = [
+            q for q in QUERIES
+            if q["id"] == target_id or q["id"] == f"2.{target_id}" or q["id"].endswith(f".{target_id}")
+        ]
+        if not matched:
+            print(f"Unknown query ID '{target_id}'.")
+            print("Available options: 2.1, 2.2, 2.3 (or 1, 2, 3), or 'all'")
+            sys.exit(1)
+        queries_to_run = matched
+
     print("Connecting to Rfam public MySQL database...")
-    print(f"Host: {DB_CONFIG['host']}:{DB_CONFIG['port']} | DB: {DB_CONFIG['db']} | User: {DB_CONFIG['user']}")
+    print(f"Host: {DB_CONFIG['host']}:{DB_CONFIG['port']} | DB: {DB_CONFIG['database']} | User: {DB_CONFIG['user']}")
 
     try:
         conn = pymysql.connect(**DB_CONFIG)
@@ -127,7 +141,7 @@ def main():
 
     try:
         with conn.cursor() as cursor:
-            for q in QUERIES:
+            for q in queries_to_run:
                 run_query(cursor, q)
     finally:
         conn.close()

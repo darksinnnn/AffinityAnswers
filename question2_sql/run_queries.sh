@@ -27,10 +27,10 @@ if command -v mysql &> /dev/null; then
     mysql -h "${HOST}" -P "${PORT}" -u "${USER}" "${DB}" < "${SQL_FILE}"
 elif command -v python3 &> /dev/null; then
     echo "MySQL CLI not found; executing via Python runner..."
-    python3 "$(dirname "$0")/run_queries.py"
+    python3 "$(dirname "$0")/run_queries.py" "$@"
 elif command -v python &> /dev/null; then
     echo "MySQL CLI not found; executing via Python runner..."
-    python "$(dirname "$0")/run_queries.py"
+    python "$(dirname "$0")/run_queries.py" "$@"
 else
     echo "Error: Neither mysql CLI nor python is available to execute queries." >&2
     exit 1

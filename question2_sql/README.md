@@ -157,7 +157,15 @@ LIMIT 15 OFFSET 120;
 ### Option A: Via Python Runner (cross-platform, recommended)
 
 ```bash
-# Requires pymysql (pip install pymysql)
+# Install dependency
+pip install -r question2_sql/requirements.txt
+
+# Run query by query individually:
+python question2_sql/run_queries.py 2.1   # Fast (~0.3s): Acacia species count
+python question2_sql/run_queries.py 2.2   # Fast (~6s): Longest wheat DNA sequence
+python question2_sql/run_queries.py 2.3   # Long (~10 min): Paginated RNA families
+
+# Or run all three sequentially:
 python question2_sql/run_queries.py
 ```
 

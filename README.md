@@ -77,7 +77,11 @@ SQL queries written and verified against the live read-only public MySQL endpoin
 # Install dependencies (for Python runner)
 pip install -r question2_sql/requirements.txt
 
-# Cross-platform Python runner
+# Run specific query individually (e.g. 2.1 or 2.2):
+python question2_sql/run_queries.py 2.1
+python question2_sql/run_queries.py 2.2
+
+# Or run all queries sequentially (note: 2.3 takes ~10 min):
 python question2_sql/run_queries.py
 
 # Or native MySQL CLI
