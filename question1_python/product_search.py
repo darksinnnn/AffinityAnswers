@@ -187,6 +187,12 @@ def parse_search_results(
         if not cards:
             cards = wrapper.find_all("div", class_="product-wrapper")
 
+    if not cards:
+        raise ScraperParsingError(
+            "Product wrapper container found, but no recognized product cards could be parsed. "
+            "Site markup or card selectors may have changed."
+        )
+
     products = []
     for card in cards:
         # Product Name and URL

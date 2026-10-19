@@ -17,10 +17,9 @@ Blind comma splitting shifts subsequent columns, corrupting the `Founded` year c
 ### B. Quote-Aware AWK Parser vs. Unnecessary Dependencies
 Instead of pulling in large external libraries or writing a complex multi-file application, we implemented a pure Unix solution:
 1. **Bash Entry Point (`sort_companies.sh`):** Handles CLI argument validation, dependency checking (`curl`, `awk`, `sort`, `mktemp`), download management with redirect handling and finite timeouts, and guaranteed temporary file cleanup via `trap ... EXIT`.
-2. **Quote-Aware AWK Parser (`parse_companies.awk`):** Implements an RFC-4180 quote-aware character scanner that:
-   - Tracks quote states (`in_quotes`).
-   - Treats commas inside quotes as literal field data, not delimiters.
-   - Unescapes standard CSV double quotes (`""` -> `"`).
+2. **Quote-Aware AWK Parser (`parse_companies.awk`):** Implements a quote-aware parser for the verified line-oriented source that:
+   - Tracks quote states (`in_quotes`) and handles quoted commas and escaped quotes (`""` -> `"`).
+   - Operates on a line-by-line basis without support for quoted multiline fields (verified absent from the source data).
    - Dynamically resolves column positions by header name (`Security`, `Headquarters Location`, `Founded`) rather than hardcoding column numbers.
 3. **Line-Oriented Source Verification:**
    Before finalizing the parser, we verified against the live source dataset that each record corresponds to exactly one physical line (504 physical lines for 504 CSV rows, with no embedded line breaks).

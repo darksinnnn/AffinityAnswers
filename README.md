@@ -13,7 +13,7 @@ AffinityAnswers/
 │   ├── requirements.txt              # Python dependencies
 │   ├── README.md                     # Question 1 detailed docs & design decisions
 │   └── tests/
-│       ├── test_product_search.py    # Unit tests suite (14 tests)
+│       ├── test_product_search.py    # Unit tests suite (15 tests)
 │       └── fixtures/
 │           ├── search_results.html   # Authentic saved HTML fixture
 │           └── empty_results.html    # Authentic empty search HTML fixture
@@ -92,7 +92,7 @@ mysql -h mysql-rfam-public.ebi.ac.uk -P 4497 -u rfamro Rfam < question2_sql/answ
 A robust, quote-aware Unix Bash + AWK script that downloads the S&P 500 company constituents dataset, dynamically maps headers, extracts the legal founding year (e.g. resolving `2013 (1888)` to `2013`), and outputs a clean tab-separated dataset sorted numerically by founding year in ascending order.
 
 ### Key Implementation Decisions
-- **Quote-Aware CSV Parsing:** Solves the core CSV problem where 13 company names (e.g. `Block, Inc.`) and almost all headquarters locations contain commas. Implements an RFC-4180 quote scanner in AWK that avoids naive `awk -F,` or `cut -d,` field shifting.
+- **Quote-Aware CSV Parsing:** Implements a quote-aware parser for the verified line-oriented source that handles quoted commas and escaped quotes (`""`), but not quoted multiline fields. Avoids naive `awk -F,` or `cut -d,` field shifting where 13 company names (e.g. `Block, Inc.`) and headquarters locations contain commas.
 - **Dynamic Header Mapping:** Locates `Security`, `Headquarters Location`, and `Founded` dynamically by header text rather than relying on brittle column indices.
 - **Numeric Year Sorting & Missing Data Handling:** Uses intermediate sort keys so that years are sorted numerically (753 precedes 1888 precedes 2013), ties are broken deterministically by company name, and missing or unparseable years are placed at the very end without fabricating fake dummy years.
 - **Ambiguity-Free TSV Output:** Outputs tab-separated records (`Company Name\tLocation\tFounding Year`) so that internal commas in company names or locations never create delimiter ambiguity.

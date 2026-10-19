@@ -68,6 +68,23 @@ class TestProductSearchParser(unittest.TestCase):
         self.assertIsInstance(products, list)
         self.assertEqual(len(products), 0)
 
+    def test_wrapper_with_unrecognized_cards_raises_error(self):
+        """If product wrapper exists but contents match no supported card selectors, raise ScraperParsingError."""
+        snippet = """
+        <div id="content">
+            <input id="input-search" value="gpu"/>
+            <div class="row all-product-wrapper mb-5">
+                <div class="unrecognized-card-class">
+                    <h3 class="custom-title">Unrecognized Format</h3>
+                </div>
+            </div>
+        </div>
+        """
+        with self.assertRaises(ScraperParsingError) as ctx:
+            parse_search_results(snippet)
+        self.assertIn("no recognized product cards could be parsed", str(ctx.exception))
+
+
     def test_missing_price_does_not_drop_product(self):
         """A product card without price elements should be retained with None price fields."""
         snippet = """

@@ -48,7 +48,7 @@ question1_python/
 ├── requirements.txt              # Minimal external dependencies (requests, beautifulsoup4)
 ├── README.md                     # Documentation, design choices, and verification notes
 └── tests/
-    ├── test_product_search.py    # 14 standard-library unit tests
+    ├── test_product_search.py    # 15 standard-library unit tests
     └── fixtures/
         ├── search_results.html   # Authentic saved HTML fixture (18 products)
         └── empty_results.html    # Authentic saved empty search HTML fixture
@@ -114,22 +114,23 @@ The test suite runs using Python's built-in `unittest` module and uses local HTM
 python -m unittest discover question1_python/tests
 ```
 
-### Test Coverage Summary (14 Tests)
+### Test Coverage Summary (15 Tests)
 
 1. `test_parse_real_fixture_products`: Confirms all 18 products from the authentic MD Computers HTML fixture are parsed with exact names, absolute URLs, displayed prices, and normalized MRP/selling prices.
 2. `test_parse_empty_results_fixture`: Confirms authentic empty search HTML produces an empty list `[]`.
-3. `test_missing_price_does_not_drop_product`: Verifies that a product without a price tag retains its record with `null` price fields.
-4. `test_single_undiscounted_price`: Verifies undiscounted single price elements extract `selling_price_inr` with `mrp_inr = null`.
-5. `test_unexpected_html_structure_raises_error`: Validates that altered markup raises `ScraperParsingError` instead of falsely reporting 0 items.
-6. `test_cloudflare_block_page_raises_error`: Validates explicit detection and reporting of bot mitigation challenge pages.
-7. `test_relative_url_resolved_to_absolute`: Checks `urljoin` resolution against site base URL.
-8. `test_thumbnail_image_link_fallback`: Ensures image thumbnail links are used if title link is missing.
-9. `test_clean_numeric_price_helper`: Tests numeric extraction from multiple currency representations (`₹10,000`, `Rs. 1,234.00`, out-of-stock strings).
-10. `test_query_parameter_encoding`: Asserts multi-word queries are encoded as query parameters.
-11. `test_http_404_failure_raises_error`: Asserts HTTP 404 triggers `ScraperHttpError`.
-12. `test_http_500_failure_raises_error`: Asserts HTTP 500 triggers `ScraperHttpError`.
-13. `test_network_timeout_raises_error`: Asserts network timeout triggers `ScraperHttpError`.
-14. `test_search_products_coordination`: Asserts `search_products` properly chains fetch and parse functions.
+3. `test_wrapper_with_unrecognized_cards_raises_error`: Validates that when a product wrapper is present but contains no recognized product card selectors, `ScraperParsingError` is raised instead of silently returning `[]`.
+4. `test_missing_price_does_not_drop_product`: Verifies that a product without a price tag retains its record with `null` price fields.
+5. `test_single_undiscounted_price`: Verifies undiscounted single price elements extract `selling_price_inr` with `mrp_inr = null`.
+6. `test_unexpected_html_structure_raises_error`: Validates that altered markup raises `ScraperParsingError` instead of falsely reporting 0 items.
+7. `test_cloudflare_block_page_raises_error`: Validates explicit detection and reporting of bot mitigation challenge pages.
+8. `test_relative_url_resolved_to_absolute`: Checks `urljoin` resolution against site base URL.
+9. `test_thumbnail_image_link_fallback`: Ensures image thumbnail links are used if title link is missing.
+10. `test_clean_numeric_price_helper`: Tests numeric extraction from multiple currency representations (`₹10,000`, `Rs. 1,234.00`, out-of-stock strings).
+11. `test_query_parameter_encoding`: Asserts multi-word queries are encoded as query parameters.
+12. `test_http_404_failure_raises_error`: Asserts HTTP 404 triggers `ScraperHttpError`.
+13. `test_http_500_failure_raises_error`: Asserts HTTP 500 triggers `ScraperHttpError`.
+14. `test_network_timeout_raises_error`: Asserts network timeout triggers `ScraperHttpError`.
+15. `test_search_products_coordination`: Asserts `search_products` properly chains fetch and parse functions.
 
 ---
 

@@ -171,6 +171,19 @@ test_edge_cases_fixture() {
 # ------------------------------------------------------------------------------
 test_live_smoke() {
     local live_url="https://raw.githubusercontent.com/datasets/s-and-p-500-companies/refs/heads/main/data/constituents.csv"
+    local raw_tmp
+    raw_tmp="$(mktemp "${TMPDIR:-/tmp}/live_source.XXXXXX.csv")"
+    if ! curl -fsSL --max-time 30 --retry 2 "${live_url}" -o "${raw_tmp}"; then
+        echo "Failed to download live source CSV for comparison" >&2
+        rm -f "${raw_tmp}"
+        return 1
+    fi
+
+    # Count source data records (excluding header row and any blank lines)
+    local expected_records
+    expected_records=$(awk 'NR > 1 && $0 !~ /^[[:space:]]*$/ { c++ } END { print c + 0 }' "${raw_tmp}")
+    rm -f "${raw_tmp}"
+
     local live_out
     live_out=$("${MAIN_SCRIPT}" "${live_url}")
 
@@ -182,11 +195,12 @@ test_live_smoke() {
         return 1
     fi
 
-    # Check total lines (1 header + 503 data rows = 504 lines)
-    local total_lines
-    total_lines=$(echo "${live_out}" | wc -l)
-    if [ "${total_lines}" -lt 500 ]; then
-        echo "Unexpected live row count: ${total_lines} (expected at least 500)" >&2
+    # Count processed data records (excluding header and blank lines)
+    local processed_records
+    processed_records=$(echo "${live_out}" | awk 'NR > 1 && $0 !~ /^[[:space:]]*$/ { c++ } END { print c + 0 }')
+
+    if [ "${processed_records}" -ne "${expected_records}" ]; then
+        echo "Record count mismatch: processed ${processed_records} records, but source has ${expected_records} records" >&2
         return 1
     fi
 

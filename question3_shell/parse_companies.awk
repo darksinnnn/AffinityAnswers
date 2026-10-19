@@ -3,8 +3,9 @@
 # Quote-aware CSV parser and extractor for company constituents data.
 # ==============================================================================
 # Features:
-#   - RFC-4180 quote awareness: correctly preserves commas inside double quotes
-#     and handles escaped double quotes ("") without external dependencies.
+#   - Quote-aware parser for verified line-oriented CSV: correctly preserves
+#     commas inside double quotes and handles escaped double quotes ("")
+#     without external dependencies (does not parse quoted multiline fields).
 #   - Dynamic header mapping: locates columns by header name ('Security',
 #     'Headquarters Location', 'Founded') rather than rigid numeric column index.
 #   - Extracts first 4-digit founding year (e.g. '2013 (1888)' -> 2013).
